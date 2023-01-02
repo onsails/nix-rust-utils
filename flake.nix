@@ -8,11 +8,11 @@
 
   outputs = { self, nixpkgs, devenv, flake-utils }:
     {
-      cleanSourceWithExts = { src, exts }:
+      cleanSourceWithExts = { src, exts, craneLib }:
         let
           exts' = if builtins.isList exts then exts else [ exts ];
         in
-        nixpkgs.lib.cleanSourceWith
+        craneLib.cleanSourceWith
           {
             filter = path: type:
               let
