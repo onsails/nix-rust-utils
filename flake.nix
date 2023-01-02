@@ -27,12 +27,11 @@
           '';
         };
 
-      mkDevenvModules = pkgs:
+      mkDevenvModules = pkgs: libs:
 
         with pkgs; [
           {
-            # env.RUSTFLAGS = (builtins.map (a: ''-L ${a}/lib'') nativeBuildInputs) ++ (lib.optionals stdenv.isDarwin (with darwin.apple_sdk; [
-            env.RUSTFLAGS = (lib.optionals stdenv.isDarwin (with darwin.apple_sdk; [
+            env.RUSTFLAGS = (builtins.map (a: ''-L ${a}/lib'') libs) ++ (lib.optionals stdenv.isDarwin (with darwin.apple_sdk; [
               "-L framework=${frameworks.Security}/Library/Frameworks"
             ]));
 
