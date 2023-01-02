@@ -4,15 +4,11 @@
   inputs = {
     devenv.url = "github:cachix/devenv";
     flake-utils.url = "github:numtide/flake-utils";
-    fenix = {
-      url = "github:nix-community/fenix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
-  outputs = { self, nixpkgs, devenv, fenix, flake-utils }:
+  outputs = { self, nixpkgs, devenv, flake-utils }:
     {
-      cleanSourceWith = src: exts:
+      cleanSourceWithExts = { src, exts }:
         let
           exts' = if builtins.isList exts then exts else [ exts ];
         in
