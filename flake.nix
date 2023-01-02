@@ -12,7 +12,21 @@
 
   outputs = { self, nixpkgs, devenv, fenix, flake-utils }:
     {
-      mkNextest = src: craneLib: buildInputs:
+      cleanSourceWith = src: exts:
+        let
+          exts' = if builtins.isList exts then exts else [ exts ];
+        in
+        nixpkgs.lib.cleanSourceWith
+          {
+            filter = path: type:
+              let
+                baseName = builtins.baseNameOf (toString path);
+              in
+              !(builtins.elem baseName exts') && type != "directory";
+          }
+          src;
+
+      mkNextest = { src, craneLib, buildInputs, pkgs }:
         craneLib.mkCargoDerivation {
           inherit src buildInputs;
 
@@ -23,7 +37,7 @@
 
           buildPhaseCargoCommand = ''
             mkdir -p $out
-            cargo nextest archive --archive-file $out/archive.tar.zst
+            ${pkgs.cargo-nextest}/bin/cargo-nextest archive --archive-file $out/archive.tar.zst
           '';
         };
 
